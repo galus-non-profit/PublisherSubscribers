@@ -1,5 +1,3 @@
-using System.Reflection;
-using MediatR;
 using Serilog;
 using SubscriberPDF.Application;
 using SubscriberPDF.Infrastructure;
@@ -13,9 +11,8 @@ var logger = new LoggerConfiguration()
 
 builder.Logging.AddSerilog(logger);
 
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
-builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

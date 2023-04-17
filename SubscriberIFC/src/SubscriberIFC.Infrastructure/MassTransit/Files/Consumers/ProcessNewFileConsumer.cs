@@ -3,17 +3,36 @@
 using global::MassTransit;
 using Microsoft.Extensions.Logging;
 using RabbitPublishSubscribe.Shared.Messages;
+using SubscriberIFC.Application.Files.Commands;
 
 internal sealed class ProcessNewFileConsumer : IConsumer<Request>
 {
     private readonly ILogger<ProcessNewFileConsumer> logger;
+    private readonly ISender mediator;
 
-    public ProcessNewFileConsumer(ILogger<ProcessNewFileConsumer> logger)
-        => (this.logger) = (logger);
+    public ProcessNewFileConsumer(ILogger<ProcessNewFileConsumer> logger, ISender mediator)
+        => (this.logger, this.mediator) = (logger, mediator);
 
     public Task Consume(ConsumeContext<Request> context)
     {
-        this.logger.LogInformation("Consuming file with extenstion {extenstion}", context.Message);
+        this.logger.LogInformation("{consumerName}", nameof(ProcessNewFileConsumer));
+        this.logger.LogInformation("Consuming file with extenstion {extenstion}", context.Message.FileExtension);
+
+        var fileExtension = context.Message.FileExtension;
+
+        if (fileExtension is "IFC")
+        {
+            var command = new PrepareThumbnail
+            {
+                FileExtension = fileExtension,
+            };
+
+            this.mediator.Send(command, CancellationToken.None);
+        }
+        else
+        {
+            this.logger.LogDebug("Unsupported file extension");
+        }
 
         return Task.CompletedTask;
     }

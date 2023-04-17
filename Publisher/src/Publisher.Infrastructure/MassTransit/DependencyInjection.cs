@@ -1,10 +1,10 @@
 ﻿namespace Publisher.Infrastructure.MassTransit;
 
-using System.Reflection;
 using System.Security.Authentication;
 using global::MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Publisher.Infrastructure.MassTransit.Files.Consumers;
 
 internal static class DependencyInjection
 {
@@ -15,7 +15,7 @@ internal static class DependencyInjection
 
         services.AddMassTransit(configure =>
         {
-            configure.AddConsumers(Assembly.GetExecutingAssembly());
+            configure.AddConsumer<PreparedNewFileConsumer>();
 
             configure.UsingRabbitMq((context, configurator) =>
             {

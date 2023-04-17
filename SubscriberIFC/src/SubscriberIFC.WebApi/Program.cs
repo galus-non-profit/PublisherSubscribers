@@ -1,5 +1,3 @@
-using System.Reflection;
-using MediatR;
 using Serilog;
 using SubscriberIFC.Application;
 using SubscriberIFC.Infrastructure;
@@ -13,7 +11,6 @@ var logger = new LoggerConfiguration()
 
 builder.Logging.AddSerilog(logger);
 
-builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
